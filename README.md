@@ -17,4 +17,4 @@ Good to go!
 
 Deactivate virtual environment: <code>deactivate</code>
 
-Now your terminal return to base environment: <code>(base) jeigmhzmac: </code>
+note your terminal has returned to base environment: <code>(base) jeigmhzmac: </code>
