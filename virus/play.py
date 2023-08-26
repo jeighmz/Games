@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 
+
 ## create the skeleton for a pygame program with a circle that moves with the arrow keys and has a clock
 
 pygame.init()
@@ -9,13 +10,19 @@ pygame.init()
 # Screen
 screen = pygame.display.set_mode((400, 300))
 
+## title 
+pygame.display.set_caption("virus")
+
+
 ## give the circle a position
 x = 200
 y = 150
 
+
 enemy_count = 4
 health_count = 0
 
+enemy_killed = 0
 
 enemy_x = [random.randint(0, 400) for i in range(enemy_count)]
 enemy_y = [random.randint(0, 300) for i in range(enemy_count)]
@@ -32,6 +39,18 @@ for i in range(enemy_count):
 score = 0
 
 done = False
+
+## add a function that draws a fading circle as a blast radius around the circle when the health potion is collected
+
+
+def draw_blast_radius(x, y):
+   for i in range(10):
+       pygame.draw.circle(screen, (255, 255, 255), (x, y), 10 + i**2)
+       pygame.display.update()
+       pygame.time.wait(100)
+       screen.fill((0, 0, 0))
+       pygame.draw.circle(screen, (0, 0, 255), (x, y), 15)
+
 
 # create a clock
 clock = pygame.time.Clock()
@@ -66,10 +85,17 @@ while not done:
     ## when the temp_score reaches 100, add another enemy
     if score % 100 == 0:
         enemy_count += 1
-        enemy_x.append(random.randint(0, 400))
-        enemy_y.append(random.randint(0, 300))
 
-    if score % 1000 == 0:
+        ## spawn kill check for new enemy
+        new_enemy_x = random.randint(0, 400)
+        new_enemy_y = random.randint(0, 300)
+        if x-25 <= new_enemy_x <= x+25 and y-25 <= new_enemy_y <= y+25:
+            new_enemy_x = random.randint(0, 400)
+            new_enemy_y = random.randint(0, 300)
+        enemy_x.append(new_enemy_x)
+        enemy_y.append(new_enemy_y)
+
+    if score % 200 == 0:
         health_count += 1
         health_x.append(random.randint(0, 400))
         health_y.append(random.randint(0, 300))
@@ -77,9 +103,9 @@ while not done:
     # draw a circle in the window
     pygame.draw.circle(screen, (0, 0, 255), (x, y), 15)
 
-    # draw a circle as a health potion to remove half of the enemies
+    # draw a circle as a health potion
     for i in range(health_count):
-        pygame.draw.circle(screen, (0, 255, 0), (health_x[i], health_y[i]), 7)
+        pygame.draw.circle(screen, 'yellow', (health_x[i], health_y[i]), 7)
 
     # draw circles for the enemies
     for i in range(enemy_count):
@@ -101,13 +127,38 @@ while not done:
     # check for collisions
     for i in range(enemy_count):
         if math.sqrt((x - enemy_x[i])**2 + (y - enemy_y[i])**2) < 25:
-            ## display "Game Over" in center of screen
+            ## display "Game Over" in center of screen and enemies_killed
+
+            #screen.fill((0, 0, 0))
             font = pygame.font.Font("freesansbold.ttf", 50)
             text = font.render("Game Over", True, (255, 255, 255))
             screen.blit(text, (60, 100))
 
             pygame.display.update()
-            pygame.time.wait(5000)
+            pygame.time.wait(2000)
+
+            font = pygame.font.Font("freesansbold.ttf", 15)
+            text = font.render("virus's killed: " + str(enemy_killed), True, (255, 255, 255))
+            screen.blit(text, (140, 150))
+            pygame.display.update()
+            pygame.time.wait(1000)
+            
+            text = font.render(str(enemy_killed)+" x +10", True, (255, 255, 255))
+            screen.blit(text, (160, 170))
+            pygame.display.update()
+            pygame.time.wait(500)
+
+            font = pygame.font.Font("freesansbold.ttf", 17)
+            final_score = score + int(enemy_killed*10)
+            score = final_score
+            text = font.render("final score: " + str(final_score), True, (255, 255, 255))
+            screen.blit(text, (130, 200))
+            pygame.display.update()
+
+            pygame.time.wait(6500)
+
+            
+           
             done = True
 
     # check for collision with health potion
@@ -118,17 +169,29 @@ while not done:
                 if math.sqrt((health_x[i] - enemy_x[j])**2 + (health_y[i] - enemy_y[j])**2) < 100:
                     enemy_x[j] = 1000
                     enemy_y[j] = 1000
-
+                    enemy_killed += 1
+            draw_blast_radius(health_x[i], health_y[i])
             health_count -= 1
             health_x.pop(i)
             health_y.pop(i)
             break
     
+    # check for collision with border
+    if x < 0:
+        x = 0 + 20
+    if x > 400:
+        x = 400 - 10
+    if y < 0:
+        y = 0 + 10
+    if y > 300:
+        y = 300 - 10
+    
+
     # update the display
     pygame.display.update()
 
     # tick the clock
     clock.tick(60)
 
-print("score: " + str(score))
+print("score: " + str(final_score))
 pygame.quit()
