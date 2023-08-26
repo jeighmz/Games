@@ -8,10 +8,8 @@ pygame builds with copilot assistance
 
 ### Instructions
 
-##  - move with arrow keys
-
-##  - press ESC to quit
-
-##  - score tracking (coming soon)
+####  - move with arrow keys (⬅,➡, ⬆, ⬇)
+####  - press ESC to quit
+####  - score tracking (coming soon)
 
 
