@@ -14,11 +14,14 @@ x = 200
 y = 150
 
 enemy_count = 4
+health_count = 0
 
 
 enemy_x = [random.randint(0, 400) for i in range(enemy_count)]
 enemy_y = [random.randint(0, 300) for i in range(enemy_count)]
 
+health_x = [random.randint(0, 400) for i in range(health_count)]
+health_y = [random.randint(0, 300) for i in range(health_count)]
 
 # draw a circle in the window
 pygame.draw.circle(screen, (0, 0, 255), (x, y), 15)
@@ -65,9 +68,18 @@ while not done:
         enemy_count += 1
         enemy_x.append(random.randint(0, 400))
         enemy_y.append(random.randint(0, 300))
+
+    if score % 1000 == 0:
+        health_count += 1
+        health_x.append(random.randint(0, 400))
+        health_y.append(random.randint(0, 300))
         
     # draw a circle in the window
     pygame.draw.circle(screen, (0, 0, 255), (x, y), 15)
+
+    # draw a circle as a health potion to remove half of the enemies
+    for i in range(health_count):
+        pygame.draw.circle(screen, (0, 255, 0), (health_x[i], health_y[i]), 7)
 
     # draw circles for the enemies
     for i in range(enemy_count):
@@ -98,7 +110,20 @@ while not done:
             pygame.time.wait(5000)
             done = True
 
+    # check for collision with health potion
+    for i in range(health_count):
+        if math.sqrt((x - health_x[i])**2 + (y - health_y[i])**2) < 20:
+            ## kill enemies in a blast radius of 100
+            for j in range(enemy_count):
+                if math.sqrt((health_x[i] - enemy_x[j])**2 + (health_y[i] - enemy_y[j])**2) < 100:
+                    enemy_x[j] = 1000
+                    enemy_y[j] = 1000
 
+            health_count -= 1
+            health_x.pop(i)
+            health_y.pop(i)
+            break
+    
     # update the display
     pygame.display.update()
 
