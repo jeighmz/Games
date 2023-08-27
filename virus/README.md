@@ -22,14 +22,15 @@ code is heavily commented to provide clear instructions to github copilot
 
 ### Improvements
 
-8/26 
+8/26
+- added magic mushroom for invincibility 
 - removed spawn kill
 - added health potion
 - added blast radius to remove virus cells
 - added collision detection for borders
 
 8/25
-- added pygame clock for time control and continuos smooth input
+- added pygame clock for time control and continuous smooth input
 - added "Game Over" screen
 
 
