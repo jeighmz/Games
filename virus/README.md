@@ -20,4 +20,16 @@ code is heavily commented to provide clear instructions to github copilot
 
 *## create the skeleton for a pygame program with a circle that moves with the arrow keys and has a clock*
 
+### Improvements
+
+8/26 
+- removed spawn kill
+- added health potion
+- added blast radius to remove virus cells
+- added collision detection for borders
+
+8/25
+- added pygame clock for time control and continuos smooth input
+- added "Game Over" screen
+
 
