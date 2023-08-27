@@ -21,6 +21,7 @@ y = 150
 
 enemy_count = 4
 health_count = 0
+mushroom_count = 0
 
 enemy_killed = 0
 
@@ -30,6 +31,9 @@ enemy_y = [random.randint(0, 300) for i in range(enemy_count)]
 health_x = [random.randint(0, 400) for i in range(health_count)]
 health_y = [random.randint(0, 300) for i in range(health_count)]
 
+magic_mushroom_x = [random.randint(0, 400) for i in range(mushroom_count)]
+magic_mushroom_y = [random.randint(0, 300) for i in range(mushroom_count)]
+
 # draw a circle in the window
 pygame.draw.circle(screen, (0, 0, 255), (x, y), 15)
 
@@ -37,6 +41,8 @@ for i in range(enemy_count):
     pygame.draw.circle(screen, (255, 0, 0), (enemy_x[i], enemy_y[i]), 10)
 
 score = 0
+mushroom_mult = 1000
+player_color = 'blue'
 
 done = False
 
@@ -81,7 +87,6 @@ while not done:
     text = font.render("score: " + str(score), True, (255, 255, 255))
     screen.blit(text, (10, 10))
 
-
     ## when the temp_score reaches 100, add another enemy
     if score % 100 == 0:
         enemy_count += 1
@@ -95,13 +100,18 @@ while not done:
         enemy_x.append(new_enemy_x)
         enemy_y.append(new_enemy_y)
 
-    if score % 200 == 0:
+    if score % 300 == 0:
         health_count += 1
         health_x.append(random.randint(0, 400))
         health_y.append(random.randint(0, 300))
+
+    if score % mushroom_mult == 0:
+        mushroom_count += 1
+        magic_mushroom_x.append(random.randint(0, 400))
+        magic_mushroom_y.append(random.randint(0, 300))
         
     # draw a circle in the window
-    pygame.draw.circle(screen, (0, 0, 255), (x, y), 15)
+    pygame.draw.circle(screen, player_color, (x, y), 15)
 
     # draw a circle as a health potion
     for i in range(health_count):
@@ -110,6 +120,9 @@ while not done:
     # draw circles for the enemies
     for i in range(enemy_count):
         pygame.draw.circle(screen, (255, 0, 0), (enemy_x[i], enemy_y[i]), 10)
+
+    for i in range(mushroom_count):
+        pygame.draw.circle(screen, 'purple', (magic_mushroom_x[i], magic_mushroom_y[i]), 7)
 
     # move the enemies
     for i in range(enemy_count):
@@ -126,7 +139,7 @@ while not done:
 
     # check for collisions
     for i in range(enemy_count):
-        if math.sqrt((x - enemy_x[i])**2 + (y - enemy_y[i])**2) < 25:
+        if math.sqrt((x - enemy_x[i])**2 + (y - enemy_y[i])**2) < 25 and player_color == 'blue':
             ## display "Game Over" in center of screen and enemies_killed
 
             #screen.fill((0, 0, 0))
@@ -154,12 +167,30 @@ while not done:
             text = font.render("final score: " + str(final_score), True, (255, 255, 255))
             screen.blit(text, (130, 200))
             pygame.display.update()
-
             pygame.time.wait(6500)
 
-            
-           
             done = True
+
+
+    # check for collision with magic mushroom
+    for i in range(mushroom_count):
+        if math.sqrt((x - magic_mushroom_x[i])**2 + (y - magic_mushroom_y[i])**2) < 20:
+            ## kill enemies in player path
+            player_color = 'gold'
+            mushroom_count -= 1
+            magic_mushroom_x.pop(i)
+            magic_mushroom_y.pop(i)
+            pygame.display.update()   
+            
+    if player_color == 'gold':
+        # check for when 5 seconds pass and change player_color back to blue without using (pygame.time.wait(5000))
+        if score % mushroom_mult == 0:   
+            player_color = 'blue'
+        for j in range(enemy_count):
+            if math.sqrt((x - enemy_x[j])**2 + (y - enemy_y[j])**2) < 25 and player_color == 'gold':
+                enemy_x[j] = 1000
+                enemy_y[j] = 1000
+                enemy_killed += 1
 
     # check for collision with health potion
     for i in range(health_count):
