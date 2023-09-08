@@ -1,0 +1,3 @@
+when 2 mushrooms are on screen, error pulls if player eats the previous spawn
+enemies_killed goes off screen, but there's a check that doesn't read. 
+
