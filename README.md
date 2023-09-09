@@ -1,5 +1,7 @@
 # Games
-pygame builds with copilot assistance
+pygame builds with LLM assistance. 
+
+using GPT-3 and GitHub CoPilot.
 
 ## Virtual Env
 Create virtual environment: <code>pip3 -m venv [VENV_NAME]</code>
