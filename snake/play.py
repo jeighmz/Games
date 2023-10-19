@@ -1,15 +1,16 @@
 import pygame
 import sys
 import random
+from leaderboard import connect, add_score, view_leaderboard, check_rank, update_leaderboard 
 
 # Initialize Pygame
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1000, 800
 SNAKE_SIZE = 20
 FOOD_SIZE = 20
-FPS = 10
+FPS = 18 ## human reaction time is 0.25s
 
 # Colors
 dark_green = (0, 100, 0)
@@ -17,14 +18,10 @@ light_green = (0, 255, 0)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+
 # Create the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Snake Game")
-
-# Load Snake Head Image
-snake_head_image = pygame.image.load("pics/snake_head.png")
-snake_head_image = pygame.transform.scale(snake_head_image, (SNAKE_SIZE, SNAKE_SIZE))
-
 
 # Initial snake position
 snake_x = WIDTH // 2
@@ -44,23 +41,7 @@ score = 0
 
 # Color gradient for the snake's body
 # You can customize the gradient colors as desired
-
-# Define the start and end colors for the gradient
-start_color = dark_green
-end_color = light_green
-
-# Number of colors in the gradient
-num_colors = 40
-
-# Calculate the color step for each component (R, G, B)
-color_step = [(end - start) // num_colors for start, end in zip(start_color, end_color)]
-
-# Generate the color gradient
-color_gradient = [(start_color[0] + i * color_step[0],
-                   start_color[1] + i * color_step[1],
-                   start_color[2] + i * color_step[2])
-                  for i in range(num_colors)]
-
+first_move = False
 
 # Main game loop
 running = True
@@ -71,6 +52,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
+            first_move = True
             if event.key == pygame.K_UP and snake_speed_y == 0:
                 snake_speed_x = 0
                 snake_speed_y = -SNAKE_SIZE
@@ -87,8 +69,8 @@ while running:
     snake_x += snake_speed_x
     snake_y += snake_speed_y
 
-    # Check for collisions with self
-    if (snake_x, snake_y) in snake_body[1:] and len(snake_body) > 10:
+    # Check for collisions with self after first move
+    if first_move and (snake_x, snake_y) in snake_body[1:]:
         running = False
 
     # Check for collisions with game borders
@@ -115,16 +97,10 @@ while running:
     # Update the snake's body segments
     snake_body.insert(0, (snake_x, snake_y))
 
-    # Remove the last segment if the snake didn't eat food (to make it move)
-    if len(snake_body) > 1 and (snake_x, snake_y) != snake_body[-1]:
+    # Remove the last segm
+    # ent if the snake didn't eat food (to make it move)
+    if len(snake_body) > 3:
         snake_body.pop()
-
-    # Draw the snake with color fading effect
-    for i, segment in enumerate(snake_body):
-        # Calculate the index in the gradient based on position
-        gradient_index = min(i, len(color_gradient) - 1)
-        segment_color = color_gradient[gradient_index]
-        pygame.draw.rect(screen, segment_color, (segment[0], segment[1], SNAKE_SIZE, SNAKE_SIZE))
 
     # Draw the food
     pygame.draw.rect(screen, RED, (food_x, food_y, FOOD_SIZE, FOOD_SIZE))
@@ -134,23 +110,35 @@ while running:
     text = font.render(f"Score: {score}", True, WHITE)
     screen.blit(text, (10, 10))
 
-    if snake_speed_x > 0:
-        rotated_head = pygame.transform.rotate(snake_head_image, 90)
-    elif snake_speed_x < 0:
-        rotated_head = pygame.transform.rotate(snake_head_image, 270)
-    elif snake_speed_y > 0:
-        rotated_head = pygame.transform.rotate(snake_head_image, 0)
-    else:
-        rotated_head = pygame.transform.rotate(snake_head_image, 180)
 
-    screen.blit(rotated_head, (snake_body[0][0], snake_body[0][1]))
+    # Draw the snake's body
+    for segment in snake_body:
+        pygame.draw.rect(screen, light_green, (segment[0], segment[1], SNAKE_SIZE, SNAKE_SIZE))
 
+
+    if running == False:
+        if check_rank(score) == True:
+            print('you got a high score!')
+            # get user id
+            id = input('enter your id: ')
+            # add score to leaderboard
+            update_leaderboard(id, score)
+            
+            # display leaderboard on display
+            font = pygame.font.Font(None, 36)
+            text = font.render(f"Score: {score}", True, WHITE)
+            screen.blit(text, (10, 10))
+            
+
+            ## delay for 1 second
+            pygame.time.delay(1000)
     # Update the display
     pygame.display.update()
 
     # Control the frame rate
     clock.tick(FPS)
 
+print('score: ', score)
 # Quit Pygame
 pygame.quit()
 sys.exit()
