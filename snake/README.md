@@ -14,11 +14,11 @@ pygame built with GPT-3 assistance.
 ####  - move with arrow keys (⬅,➡, ⬆, ⬇)
 
 ### Prompts
-You will still be required to iteratively prompt the LLM to get additional features added in. Such as: 
+You will still be required to iteratively prompt the LLM to get additional features added in, such as: 
 - self-collision check
 - border-collision check
 
 ### Improvements
 
-4/12/2024: read-me file changes
-4/17/2024: leaderboard initialization and functions added
+- 4/12/2024: read-me file changes 
+- 4/17/2024: leaderboard initialization and functions added
