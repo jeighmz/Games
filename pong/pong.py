@@ -5,6 +5,11 @@ import sys
 pygame.init()
 clock = pygame.time.Clock()
 
+score_a = 0
+score_b = 0
+
+font = pygame.font.Font(None, 36)
+
 # Setting up main window
 screen_width = 800
 screen_height = 600
@@ -49,12 +54,46 @@ while True:
 
     paddle_a.move_ip(0, paddle_a_speed)
 
+     # AI
+    if ball.centery > paddle_b.centery:
+        paddle_b_speed = paddle_speed
+    elif ball.centery < paddle_b.centery:
+        paddle_b_speed = -paddle_speed
+    else:
+        paddle_b_speed = 0
+
+    # Update paddle position
+    paddle_b.y += paddle_b_speed
+
+
+    # Check if ball hit the wall
+    if ball.left < 0:
+        score_b += 1
+        ball.center = (screen_width/2, screen_height/2)
+    elif ball.right > screen_width:
+        score_a += 1
+        ball.center = (screen_width/2, screen_height/2)
+
+    # Render scores
+    score_a_surface = font.render(str(score_a), True, (0,0,0) )
+    score_b_surface = font.render(str(score_b), True, (0,0,0))
+
+    # Calculate positions for scores
+    score_a_position = (10, 10)
+    score_b_position = (screen_width - score_b_surface.get_width() - 10, 10)
+
+    # Draw scores
+    screen.blit(score_a_surface, score_a_position)
+    screen.blit(score_b_surface, score_b_position)
+
+
+
     # Ensuring paddles don't go off screen
     if paddle_a.top < 0:
         paddle_a.top = 0
     if paddle_a.bottom > screen_height:
         paddle_a.bottom = screen_height
-
+    
     # Ball collision with paddles
     if ball.colliderect(paddle_a) or ball.colliderect(paddle_b):
         ball_speed[0] *= -1
