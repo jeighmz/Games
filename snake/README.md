@@ -21,3 +21,4 @@ You will still be required to iteratively prompt the LLM to get additional featu
 ### Improvements
 
 4/12/2024: read-me file changes
+4/17/2024: leaderboard initialization and functions added
