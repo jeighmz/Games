@@ -8,7 +8,10 @@ clock = pygame.time.Clock()
 score_a = 0
 score_b = 0
 
-font = pygame.font.Font(None, 36)
+welcome_start_time = pygame.time.get_ticks()
+
+pygame.font.init()
+font = pygame.font.SysFont('arial', 36)
 
 # Setting up main window
 screen_width = 800
@@ -73,21 +76,7 @@ while True:
     elif ball.right > screen_width:
         score_a += 1
         ball.center = (screen_width/2, screen_height/2)
-
-    # Render scores
-    score_a_surface = font.render(str(score_a), True, (0,0,0) )
-    score_b_surface = font.render(str(score_b), True, (0,0,0))
-
-    # Calculate positions for scores
-    score_a_position = (10, 10)
-    score_b_position = (screen_width - score_b_surface.get_width() - 10, 10)
-
-    # Draw scores
-    screen.blit(score_a_surface, score_a_position)
-    screen.blit(score_b_surface, score_b_position)
-
-
-
+    
     # Ensuring paddles don't go off screen
     if paddle_a.top < 0:
         paddle_a.top = 0
@@ -105,5 +94,24 @@ while True:
     pygame.draw.ellipse(screen, (200, 200, 200), ball)
     pygame.draw.aaline(screen, (200, 200, 200), (screen_width / 2, 0), (screen_width / 2, screen_height))
 
+
+
+    score_a_surface = font.render(str(score_a), True, (255, 255, 255))
+    score_b_surface = font.render(str(score_b), True, (255, 255, 255))
+
+    # Draw scores
+    screen.blit(score_a_surface, (50, 50))
+    screen.blit(score_b_surface, (screen_width - 50, 50))
+
+    if pygame.time.get_ticks() - welcome_start_time < 5000:
+        sample_text_surface = font.render('welcome', True, (255, 255, 255))
+        text_position = (
+            (screen_width - sample_text_surface.get_width()) / 2,
+            (screen_height - sample_text_surface.get_height()) / 2
+        )
+        # Draw sample text
+        screen.blit(sample_text_surface, text_position)
+
     pygame.display.flip()
+
     clock.tick(60)
