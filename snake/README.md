@@ -18,6 +18,14 @@ You will still be required to iteratively prompt the LLM to get additional featu
 - self-collision check
 - border-collision check
 
+### Postgres
+To get started with the PostgreSQL database for the leaderboard system in leaderboard.py, you can follow these steps:
+
+Install PostgreSQL: Download and install PostgreSQL from the official website for your operating system (https://postgresapp.com/)
+
+Open the PostgreSQL application to begin the server and use the elephant icon at the toolbar to activate and deactive the connection to the server on-demand. Database secured.
+
+
 ### Improvements
 
 - 4/12/2024: read-me file changes 
