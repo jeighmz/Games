@@ -6,8 +6,6 @@ from leaderboard import connect, initate_leaderboard, add_score, view_leaderboar
 # Import pygame
 import pygame
 
-
-
 # Initialize Pygame
 pygame.init()
 
