@@ -1,7 +1,12 @@
-import pygame
-import sys
 import random
-from leaderboard import connect, add_score, view_leaderboard, check_rank, update_leaderboard 
+import os
+import sys
+from leaderboard import connect, initate_leaderboard, add_score, view_leaderboard, check_rank, update_leaderboard 
+
+# Import pygame
+import pygame
+
+
 
 # Initialize Pygame
 pygame.init()
@@ -117,6 +122,7 @@ while running:
 
 
     if running == False:
+        initate_leaderboard()
         if check_rank(score) == True:
             print('you got a high score!')
             # get user id
