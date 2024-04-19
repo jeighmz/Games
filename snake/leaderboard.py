@@ -24,7 +24,7 @@ def add_score(id, score):
 def view_leaderboard():
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM snakeLeaderboard LIMIT 5')
+    cur.execute('SELECT * FROM snakeLeaderboard ORDER BY score DESC LIMIT 5')
     rows = cur.fetchall()
     conn.commit()
     conn.close()
